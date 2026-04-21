@@ -7,55 +7,62 @@
 
   <!-- ================================================
        POLICES GOOGLE FONTS
-       Rajdhani : titres cyberpunk anguleux
-       Share Tech Mono : style terminal / code
+       Outfit : titres propres, modernes, aérés
+       Space Mono : style spatial / technique
   ================================================ -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 
   <style>
     /* ================================================
-       VARIABLES CSS — PALETTE CYBERPUNK
+       VARIABLES CSS — PALETTE SPATIALE
        Modifie ces valeurs pour changer le thème global
     ================================================ */
     :root {
-      --bg:           #050508;        /* fond principal quasi-noir */
-      --bg-2:         #0a0a10;        /* fond sections alternées */
-      --surface:      #0f0f18;        /* cartes / panels */
-      --border:       #1a1a2e;        /* bordures subtiles */
-      --cyan:         #00f0ff;        /* accent principal néon cyan */
-      --yellow:       #f5c518;        /* accent secondaire jaune NC */
-      --pink:         #ff2d78;        /* accent tertiaire rose vif */
-      --text:         #c8d0e0;        /* texte courant */
-      --text-muted:   #4a5568;        /* texte secondaire */
+      --bg:           #03030a;              /* noir profond */
+      --bg-2:         #06060f;              /* noir légèrement alterné */
+      --surface:      #0c0c1a;              /* surface des cartes */
+      --border:       rgba(255,255,255,0.07);
       --white:        #ffffff;
-      --font-display: 'Rajdhani', sans-serif;
-      --font-mono:    'Share Tech Mono', monospace;
-      --max-w:        1100px;
-      --radius:       4px;
-      --transition:   0.3s ease;
+      --off-white:    #dde0ea;              /* blanc teinté pour le texte courant */
+      --muted:        #505570;              /* texte secondaire / discret */
+      --font-display: 'Outfit', sans-serif;
+      --font-mono:    'Space Mono', monospace;
+      --max-w:        1140px;
+      --transition:   0.35s ease;
     }
 
     /* ================================================
        RESET & BASE
     ================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; font-size: 16px; }
-
     body {
       background: var(--bg);
-      color: var(--text);
+      color: var(--off-white);
       font-family: var(--font-mono);
-      line-height: 1.7;
+      line-height: 1.75;
       overflow-x: hidden;
     }
 
-    /* Scrollbar custom */
-    ::-webkit-scrollbar { width: 4px; }
+    /* Scrollbar fine blanche */
+    ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.25); border-radius: 2px; }
+
+    /* ================================================
+       CANVAS ÉTOILES — toile de fond fixe
+    ================================================ */
+    #starfield {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Tout le contenu passe au-dessus */
+    header, main, footer { position: relative; z-index: 1; }
 
     /* ================================================
        UTILITAIRES
@@ -64,73 +71,52 @@
       width: 100%;
       max-width: var(--max-w);
       margin: 0 auto;
-      padding: 0 1.25rem;
+      padding: 0 1.5rem;
     }
 
-    /* Ligne décorative néon */
-    .neon-line {
-      display: inline-block;
-      width: 48px;
-      height: 2px;
-      background: var(--cyan);
-      box-shadow: 0 0 8px var(--cyan);
-      vertical-align: middle;
-      margin-right: 0.75rem;
-    }
-
-    /* Label de section (petit tag au-dessus du titre) */
     .section-tag {
       font-family: var(--font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
+      font-size: 0.66rem;
+      letter-spacing: 0.28em;
       text-transform: uppercase;
-      color: var(--cyan);
+      color: var(--muted);
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
+      gap: 0.6rem;
+      margin-bottom: 0.55rem;
     }
-    .section-tag::before {
-      content: '//';
-      opacity: 0.5;
-    }
+    .section-tag::before { content: '★'; font-size: 0.55rem; }
 
-    /* Titre de section */
     .section-title {
       font-family: var(--font-display);
-      font-size: clamp(1.8rem, 5vw, 2.8rem);
-      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
       color: var(--white);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      line-height: 1.1;
-      margin-bottom: 1rem;
+      letter-spacing: 0.02em;
+      line-height: 1.05;
+      margin-bottom: 0.6rem;
     }
 
-    /* Séparateur diagonal entre sections */
-    .divider {
-      width: 100%;
-      height: 60px;
-      background: var(--bg-2);
-      clip-path: polygon(0 0, 100% 30%, 100% 100%, 0 100%);
-      margin-top: -1px;
+    .section-sub {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
     }
 
     /* ================================================
-       HEADER / NAVIGATION
-       Discret, barre fine en haut avec menu hamburger
+       HEADER FIXE
     ================================================ */
     header {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       z-index: 1000;
-      padding: 1rem 0;
-      background: rgba(5, 5, 8, 0.85);
-      backdrop-filter: blur(12px);
+      padding: 1.1rem 0;
+      background: rgba(3, 3, 10, 0.8);
+      backdrop-filter: blur(18px);
       border-bottom: 1px solid var(--border);
-      transition: var(--transition);
     }
 
     .header-inner {
@@ -139,17 +125,16 @@
       justify-content: space-between;
     }
 
-    /* Logo / initiales dans le header */
+    /* Logo initiales — modifie les lettres ici */
     .header-logo {
       font-family: var(--font-display);
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 700;
       color: var(--white);
       text-transform: uppercase;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.22em;
       text-decoration: none;
     }
-    .header-logo span { color: var(--cyan); }
 
     /* ---- BOUTON HAMBURGER ---- */
     .hamburger {
@@ -164,33 +149,28 @@
     }
     .hamburger span {
       display: block;
-      width: 24px;
-      height: 2px;
-      background: var(--cyan);
+      width: 22px;
+      height: 1.5px;
+      background: var(--white);
       border-radius: 2px;
       transition: var(--transition);
-      box-shadow: 0 0 6px var(--cyan);
     }
-
-    /* Animation hamburger → croix quand ouvert */
-    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
     .hamburger.open span:nth-child(2) { opacity: 0; }
-    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
-    /* ---- MENU DÉROULANT ---- */
+    /* ---- PANEL NAVIGATION ---- */
     .nav-menu {
       position: fixed;
-      top: 0;
-      right: -100%;
-      width: min(280px, 85vw);
+      top: 0; right: -100%;
+      width: min(300px, 88vw);
       height: 100vh;
       background: var(--surface);
       border-left: 1px solid var(--border);
-      padding: 5rem 2rem 2rem;
+      padding: 5.5rem 2.5rem 2rem;
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
-      transition: right 0.4s cubic-bezier(0.77, 0, 0.18, 1);
+      transition: right 0.45s cubic-bezier(0.77, 0, 0.18, 1);
       z-index: 1050;
     }
     .nav-menu.open { right: 0; }
@@ -198,179 +178,157 @@
     .nav-menu a {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 1rem;
       font-family: var(--font-display);
       font-size: 1.1rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: var(--text);
+      color: var(--off-white);
       text-decoration: none;
-      padding: 0.75rem 0;
+      padding: 1rem 0;
       border-bottom: 1px solid var(--border);
       transition: var(--transition);
     }
-    .nav-menu a:hover { color: var(--cyan); padding-left: 0.5rem; }
-    .nav-menu a .nav-num {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--cyan);
-      opacity: 0.7;
-    }
+    .nav-menu a:hover { color: var(--white); padding-left: 0.5rem; }
+    .nav-menu a .nav-num { font-size: 0.62rem; color: var(--muted); }
 
-    /* Overlay sombre derrière le menu */
+    /* Overlay sombre */
     .nav-overlay {
       display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75);
       z-index: 1040;
     }
     .nav-overlay.open { display: block; }
 
     /* ================================================
        SECTION HERO
-       Plein écran, nom en grand, description courte
     ================================================ */
     #hero {
       min-height: 100svh;
       display: flex;
       align-items: center;
-      padding: 6rem 0 4rem;
+      padding: 7rem 0 5rem;
       position: relative;
       overflow: hidden;
     }
 
-    /* Grille de fond style cyberpunk */
-    #hero::before {
-      content: '';
+    /* Lueur douce en fond côté droit */
+    .hero-glow {
       position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0,240,255,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,240,255,0.04) 1px, transparent 1px);
-      background-size: 60px 60px;
+      right: -5%; top: 15%;
+      width: 55vw; height: 70vh;
+      background: radial-gradient(ellipse at 60% 40%, rgba(255,255,255,0.035) 0%, transparent 65%);
       pointer-events: none;
     }
 
-    /* Lueur d'ambiance en fond */
-    #hero::after {
-      content: '';
+    /* ASTRONAUTE SVG flottant */
+    .astronaut {
       position: absolute;
-      top: 30%;
-      left: -10%;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(ellipse, rgba(0,240,255,0.07) 0%, transparent 70%);
+      right: 6%; top: 50%;
+      transform: translateY(-50%);
+      width: clamp(130px, 20vw, 260px);
+      animation: float 7s ease-in-out infinite;
       pointer-events: none;
+      opacity: 0.92;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(-50%) rotate(-4deg); }
+      50%      { transform: translateY(calc(-50% - 20px)) rotate(4deg); }
     }
 
-    .hero-content { position: relative; z-index: 1; }
+    .hero-content { position: relative; z-index: 2; max-width: 560px; }
 
-    /* Petite ligne de statut avant le nom */
-    .hero-status {
+    .hero-eyebrow {
       font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--cyan);
-      letter-spacing: 0.2em;
+      font-size: 0.68rem;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
-      margin-bottom: 1.5rem;
+      color: var(--muted);
+      margin-bottom: 1.8rem;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.8rem;
     }
-    .hero-status::before {
+    .hero-eyebrow::before {
       content: '';
       display: inline-block;
-      width: 8px;
-      height: 8px;
+      width: 6px; height: 6px;
       border-radius: 50%;
-      background: var(--cyan);
-      box-shadow: 0 0 10px var(--cyan);
-      animation: blink 1.5s infinite;
+      background: var(--white);
+      box-shadow: 0 0 10px var(--white);
+      animation: blink 2.2s infinite;
     }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.3; }
-    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
 
     /* NOM EN GRAND */
     .hero-name {
       font-family: var(--font-display);
-      font-size: clamp(3rem, 14vw, 8rem);
-      font-weight: 700;
-      line-height: 0.95;
+      font-size: clamp(3.5rem, 15vw, 9rem);
+      font-weight: 800;
+      line-height: 0.9;
       text-transform: uppercase;
       color: var(--white);
-      letter-spacing: -0.01em;
-      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
     }
-    .hero-name .accent { color: var(--cyan); text-shadow: 0 0 30px rgba(0,240,255,0.5); }
 
-    /* Description courte sous le nom */
+    /* Description */
     .hero-desc {
       font-family: var(--font-mono);
-      font-size: clamp(0.8rem, 2.5vw, 0.95rem);
-      color: var(--text);
-      max-width: 480px;
-      line-height: 1.8;
+      font-size: clamp(0.76rem, 2vw, 0.86rem);
+      color: var(--off-white);
+      line-height: 1.95;
+      max-width: 400px;
       margin-bottom: 2.5rem;
-      border-left: 2px solid var(--cyan);
-      padding-left: 1rem;
+      opacity: 0.72;
     }
 
-    /* ---- CTA principal ---- */
+    /* CTA blanc sur fond noir */
     .hero-cta {
       display: inline-flex;
       align-items: center;
       gap: 0.75rem;
       font-family: var(--font-display);
-      font-size: 1rem;
-      font-weight: 600;
+      font-size: 0.88rem;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.18em;
       color: var(--bg);
-      background: var(--cyan);
+      background: var(--white);
       border: none;
-      padding: 0.85rem 2rem;
+      padding: 0.9rem 2.2rem;
       text-decoration: none;
-      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
       cursor: pointer;
       transition: var(--transition);
-      box-shadow: 0 0 20px rgba(0,240,255,0.35);
     }
     .hero-cta:hover {
-      background: var(--white);
-      box-shadow: 0 0 40px rgba(0,240,255,0.6);
-      transform: translateY(-2px);
+      background: var(--off-white);
+      transform: translateY(-3px);
+      box-shadow: 0 14px 40px rgba(255,255,255,0.1);
     }
-    .hero-cta svg { width: 18px; height: 18px; }
+    .hero-cta svg { width: 15px; height: 15px; }
 
-    /* Scroll indicator discret */
+    /* Indicateur scroll */
     .scroll-hint {
       position: absolute;
-      bottom: 2rem;
-      left: 50%;
+      bottom: 2.5rem; left: 50%;
       transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.4rem;
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
       font-family: var(--font-mono);
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      letter-spacing: 0.2em;
+      font-size: 0.58rem;
+      color: var(--muted);
+      letter-spacing: 0.25em;
       text-transform: uppercase;
     }
     .scroll-hint::after {
       content: '';
-      width: 1px;
-      height: 40px;
-      background: linear-gradient(var(--cyan), transparent);
-      animation: scrollLine 2s ease-in-out infinite;
+      width: 1px; height: 32px;
+      background: linear-gradient(var(--white), transparent);
+      animation: lineDown 2.4s ease-in-out infinite;
     }
-    @keyframes scrollLine {
+    @keyframes lineDown {
       0%   { transform: scaleY(0); transform-origin: top; }
       50%  { transform: scaleY(1); transform-origin: top; }
       51%  { transform: scaleY(1); transform-origin: bottom; }
@@ -378,146 +336,285 @@
     }
 
     /* ================================================
-       SECTIONS PROJETS
-       Template commun aux 4 sections
+       DÉCORATION PLANÈTES
+       Position : absolute dans chaque section
+    ================================================ */
+    .planet-deco {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0.16;
+      z-index: 0;
+    }
+
+    /* ================================================
+       SECTIONS PROJETS — STRUCTURE COMMUNE
     ================================================ */
     .project-section {
-      padding: 5rem 0;
-      background: var(--bg);
-      position: relative;
-    }
-    .project-section:nth-child(even) { background: var(--bg-2); }
-
-    /* En-tête de section */
-    .project-header {
-      margin-bottom: 3rem;
-    }
-
-    /* Layout image + texte (mobile: empilé, desktop: côte à côte) */
-    .project-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-    @media (min-width: 768px) {
-      .project-grid { grid-template-columns: 1fr 1fr; align-items: start; }
-      /* Alterne gauche/droite pour les sections paires */
-      .project-section:nth-child(even) .project-grid { direction: rtl; }
-      .project-section:nth-child(even) .project-grid > * { direction: ltr; }
-    }
-
-    /* ---- Placeholder image ---- */
-    .project-image-wrap {
+      padding: 7rem 0;
       position: relative;
       overflow: hidden;
-      border: 1px solid var(--border);
-      /* clip angulaire style cyberpunk */
-      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+    }
+    .project-section > .container { position: relative; z-index: 1; }
+
+    .project-header { margin-bottom: 4rem; }
+
+    /* Ligne séparatrice fine */
+    .header-rule {
+      width: 36px; height: 1px;
+      background: rgba(255,255,255,0.22);
+      margin-top: 1.2rem;
+    }
+
+    /* ================================================
+       GRILLE INTRO — image principale + texte
+    ================================================ -->
+    */
+    .intro-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      margin-bottom: 4.5rem;
+    }
+    @media (min-width: 768px) {
+      .intro-grid {
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+        gap: 4.5rem;
+      }
+    }
+
+    /* Image principale */
+    .main-img-wrap {
+      position: relative;
+      overflow: hidden;
       background: var(--surface);
+      border: 1px solid var(--border);
       aspect-ratio: 4/3;
       cursor: pointer;
     }
-
     /* ============================================
-       IMAGE À METTRE ICI
-       Remplace le background de .project-image par
-       une balise <img src="..." /> ou un background-image
-    ============================================ */
-    .project-image {
-      width: 100%;
-      height: 100%;
+       IMAGE PRINCIPALE — À REMPLACER
+       Option A : <img class="img-bg" src="ton-image.jpg" alt="..." />
+       Option B : ajoute style="background-image:url('...')" sur .img-bg
+    ============================================ -->
+    .img-bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
       object-fit: cover;
-      display: block;
-      background: linear-gradient(135deg, #0a0a18 0%, #111128 100%);
-      transition: transform 0.5s ease;
-      /* Quand tu auras une image, retire ce background et ajoute : */
-      /* background: none; */
+      transition: transform 0.55s ease;
+      background: linear-gradient(140deg, #07071c 0%, #0d0d28 100%);
     }
-
-    /* Placeholder visuel en attendant l'image */
-    .img-placeholder {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      letter-spacing: 0.1em;
-    }
-    .img-placeholder svg {
-      width: 40px;
-      height: 40px;
-      opacity: 0.3;
-    }
-
-    /* Effet survol image : zoom léger + lueur */
-    .project-image-wrap:hover .project-image {
-      transform: scale(1.04);
-    }
-    .project-image-wrap::after {
+    .main-img-wrap:hover .img-bg { transform: scale(1.05); }
+    .main-img-wrap::after {
       content: '';
-      position: absolute;
-      inset: 0;
-      border: 2px solid var(--cyan);
-      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+      position: absolute; inset: 0;
+      border: 1px solid rgba(255,255,255,0.22);
       opacity: 0;
-      transition: opacity 0.3s ease;
-      box-shadow: inset 0 0 30px rgba(0,240,255,0.15);
+      transition: opacity 0.35s;
     }
-    .project-image-wrap:hover::after { opacity: 1; }
+    .main-img-wrap:hover::after { opacity: 1; }
 
-    /* ---- Texte du projet ---- */
-    .project-text { display: flex; flex-direction: column; justify-content: center; gap: 1.25rem; }
+    /* Placeholder visuel */
+    .img-placeholder {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.7rem;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .img-placeholder svg { width: 32px; height: 32px; opacity: 0.22; }
 
+    /* Texte intro */
+    .intro-text {
+      display: flex; flex-direction: column;
+      justify-content: center; gap: 1.2rem;
+    }
     .project-title {
       font-family: var(--font-display);
-      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-size: clamp(1.4rem, 3.5vw, 2rem);
       font-weight: 700;
       color: var(--white);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.03em;
     }
-
     .project-meta {
       font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--cyan);
-      letter-spacing: 0.15em;
+      font-size: 0.66rem;
+      color: var(--muted);
+      letter-spacing: 0.16em;
       text-transform: uppercase;
     }
-
     /* ============================================
-       TEXTE DE DESCRIPTION À MODIFIER
-       Remplace le Lorem Ipsum par ta vraie description
+       DESCRIPTION INTRO — À MODIFIER
     ============================================ */
     .project-desc {
       font-family: var(--font-mono);
-      font-size: 0.85rem;
-      color: var(--text);
-      line-height: 1.9;
+      font-size: 0.8rem;
+      color: var(--off-white);
+      line-height: 2;
+      opacity: 0.78;
     }
 
-    /* Tags / technologies utilisées */
-    .project-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
+    /* Tags */
+    .project-tags { display: flex; flex-wrap: wrap; gap: 0.45rem; }
     .tag {
       font-family: var(--font-mono);
-      font-size: 0.65rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--off-white);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 0.26rem 0.65rem;
+      background: rgba(255,255,255,0.03);
+      transition: var(--transition);
+    }
+    .tag:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.38); }
+
+    /* ================================================
+       TITRE AU-DESSUS DE LA GRILLE DES PRODUCTIONS
+    ================================================ */
+    .productions-label {
+      font-family: var(--font-mono);
+      font-size: 0.64rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.6rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .productions-label::before {
+      content: '';
+      display: inline-block;
+      width: 20px; height: 1px;
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* ================================================
+       GRILLE DES VIGNETTES DE PRODUCTION
+       Mobile : 2 colonnes
+       Tablet : 3 colonnes
+       Desktop : layouts variés par section
+    ================================================ */
+    .prod-grid {
+      display: grid;
+      gap: 1.1rem;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media (min-width: 600px) {
+      .prod-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    /* --- Layout A : 3+2 (section 1) ---
+       3 cartes en haut, 2 grandes en bas */
+    @media (min-width: 900px) {
+      .prod-grid.layout-a {
+        grid-template-columns: repeat(6, 1fr);
+      }
+      .prod-grid.layout-a .prod-card:nth-child(1) { grid-column: span 2; }
+      .prod-grid.layout-a .prod-card:nth-child(2) { grid-column: span 2; }
+      .prod-grid.layout-a .prod-card:nth-child(3) { grid-column: span 2; }
+      .prod-grid.layout-a .prod-card:nth-child(4) { grid-column: span 3; }
+      .prod-grid.layout-a .prod-card:nth-child(5) { grid-column: span 3; }
+
+      /* --- Layout B : 1 grande + grille (section 2) --- */
+      .prod-grid.layout-b {
+        grid-template-columns: repeat(5, 1fr);
+      }
+      .prod-grid.layout-b .prod-card:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+      .prod-grid.layout-b .prod-card:nth-child(2) { grid-column: span 3; }
+      .prod-grid.layout-b .prod-card:nth-child(3) { grid-column: span 3; }
+      .prod-grid.layout-b .prod-card:nth-child(4) { grid-column: span 2; }
+      .prod-grid.layout-b .prod-card:nth-child(5) { grid-column: span 2; }
+      .prod-grid.layout-b .prod-card:nth-child(6) { grid-column: span 1; }
+
+      /* --- Layout C : grille régulière 3x2 (section 3) --- */
+      .prod-grid.layout-c {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      /* --- Layout D : 1 grande + 4 (section 4) --- */
+      .prod-grid.layout-d {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .prod-grid.layout-d .prod-card:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+      .prod-grid.layout-d .prod-card:nth-child(2) { grid-column: span 2; }
+      .prod-grid.layout-d .prod-card:nth-child(3) { grid-column: span 2; }
+      .prod-grid.layout-d .prod-card:nth-child(4) { grid-column: span 2; }
+      .prod-grid.layout-d .prod-card:nth-child(5) { grid-column: span 2; }
+    }
+
+    /* ---- Vignette individuelle ---- */
+    .prod-card {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    .prod-card:hover { border-color: rgba(255,255,255,0.22); }
+
+    /* Zone image de la vignette */
+    .prod-img {
+      position: relative;
+      overflow: hidden;
+      background: var(--surface);
+      aspect-ratio: 4/3;
+      flex-shrink: 0;
+    }
+    /* ============================================
+       IMAGE VIGNETTE — À REMPLACER
+       Option A : <img class="prod-img-fill" src="..." alt="..." />
+       Option B : ajoute background-image sur .prod-img-bg
+    ============================================ -->
+    */
+    .prod-img-bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+      background: linear-gradient(145deg, #06061c 0%, #0c0c28 100%);
+    }
+    .prod-card:hover .prod-img-bg { transform: scale(1.06); }
+
+    .prod-img-placeholder {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.54rem;
+      color: var(--muted);
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--cyan);
-      border: 1px solid rgba(0,240,255,0.3);
-      padding: 0.25rem 0.65rem;
-      /* Clip asymétrique */
-      clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
-      background: rgba(0,240,255,0.05);
+    }
+
+    /* Légende sous la vignette */
+    .prod-caption {
+      padding: 0.7rem 0.85rem;
+      background: var(--surface);
+      flex: 1;
+    }
+    .prod-caption-title {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.28rem;
+    }
+    /* ============================================
+       LÉGENDE VIGNETTE — À MODIFIER
+       Remplace le Lorem Ipsum par ta description
+    ============================================ */
+    .prod-caption-desc {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--muted);
+      line-height: 1.7;
     }
 
     /* ================================================
@@ -526,32 +623,32 @@
     footer {
       background: var(--surface);
       border-top: 1px solid var(--border);
-      padding: 2.5rem 0;
+      padding: 3rem 0;
       text-align: center;
     }
     .footer-name {
       font-family: var(--font-display);
-      font-size: 1.4rem;
-      font-weight: 700;
+      font-size: 1.5rem;
+      font-weight: 800;
       color: var(--white);
       text-transform: uppercase;
-      letter-spacing: 0.15em;
-      margin-bottom: 0.5rem;
+      letter-spacing: 0.22em;
+      margin-bottom: 0.45rem;
     }
-    .footer-name span { color: var(--cyan); }
     .footer-copy {
       font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      letter-spacing: 0.1em;
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
     }
 
     /* ================================================
-       RESPONSIVE — AJUSTEMENTS MOBILE
+       RESPONSIVE MOBILE
     ================================================ */
-    @media (max-width: 480px) {
-      .hero-name { letter-spacing: -0.02em; }
-      .project-section { padding: 3.5rem 0; }
+    @media (max-width: 500px) {
+      .astronaut { display: none; }
+      .project-section { padding: 4.5rem 0; }
+      .intro-grid { gap: 2rem; }
     }
   </style>
 </head>
@@ -559,30 +656,28 @@
 <body>
 
   <!-- ================================================
+       CANVAS ÉTOILES — rendu JS en fond fixe
+  ================================================ -->
+  <canvas id="starfield"></canvas>
+
+  <!-- ================================================
        HEADER FIXE
-       Menu hamburger → ouverture du panel latéral
   ================================================ -->
   <header>
     <div class="container header-inner">
+      <!-- LOGO — modifie les initiales ici -->
+      <a href="#hero" class="header-logo">P · N</a>
 
-      <!-- LOGO / INITIALES — modifie les lettres ici -->
-      <a href="#hero" class="header-logo">P<span>.</span>N</a>
-
-      <!-- Bouton hamburger -->
       <button class="hamburger" id="hamburgerBtn" aria-label="Ouvrir le menu">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </button>
     </div>
   </header>
 
-  <!-- Overlay sombre cliquable pour fermer le menu -->
   <div class="nav-overlay" id="navOverlay"></div>
 
-  <!-- Panel de navigation latéral -->
-  <nav class="nav-menu" id="navMenu" aria-label="Navigation principale">
-    <!-- Chaque lien pointe vers l'id de la section correspondante -->
+  <!-- Panel navigation latéral -->
+  <nav class="nav-menu" id="navMenu">
     <!-- Modifie les noms si tu veux renommer les parties -->
     <a href="#partie1" onclick="closeMenu()"><span class="nav-num">01</span> PARTIE 1</a>
     <a href="#partie2" onclick="closeMenu()"><span class="nav-num">02</span> PARTIE 2</a>
@@ -590,297 +685,674 @@
     <a href="#partie4" onclick="closeMenu()"><span class="nav-num">04</span> PARTIE 4</a>
   </nav>
 
-  <!-- ================================================
-       SECTION HERO
-       Première chose visible à l'arrivée sur la page
-  ================================================ -->
-  <section id="hero">
-    <div class="container hero-content">
+  <main>
 
-      <!-- Statut en haut -->
-      <p class="hero-status">Disponible · Communication &amp; Design</p>
+    <!-- ================================================
+         SECTION HERO
+    ================================================ -->
+    <section id="hero">
+      <div class="hero-glow"></div>
 
-      <!-- NOM EN GRAND — remplace NOM et PRENOM -->
-      <h1 class="hero-name">
-        PRENOM<br><span class="accent">NOM</span>
-      </h1>
+      <!-- ASTRONAUTE FLOTTANT (SVG inline) -->
+      <svg class="astronaut" viewBox="0 0 200 260" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <ellipse cx="100" cy="155" rx="52" ry="62" fill="#e8eaf0" opacity="0.95"/>
+        <circle cx="100" cy="88" r="42" fill="#d4d8e4"/>
+        <ellipse cx="100" cy="92" rx="28" ry="26" fill="#0a0a1e" opacity="0.88"/>
+        <ellipse cx="90" cy="83" rx="9" ry="7" fill="white" opacity="0.13"/>
+        <rect x="76" y="126" width="48" height="14" rx="7" fill="#c4c8d4"/>
+        <ellipse cx="52" cy="162" rx="18" ry="10" fill="#d4d8e4" transform="rotate(-30 52 162)"/>
+        <circle cx="38" cy="170" r="9" fill="#c4c8d4"/>
+        <ellipse cx="148" cy="162" rx="18" ry="10" fill="#d4d8e4" transform="rotate(30 148 162)"/>
+        <circle cx="162" cy="170" r="9" fill="#c4c8d4"/>
+        <rect x="75" y="210" width="22" height="36" rx="11" fill="#ccd0dc"/>
+        <rect x="103" y="210" width="22" height="36" rx="11" fill="#ccd0dc"/>
+        <ellipse cx="86" cy="246" rx="14" ry="8" fill="#b0b4c0"/>
+        <ellipse cx="114" cy="246" rx="14" ry="8" fill="#b0b4c0"/>
+        <rect x="88" y="148" width="24" height="16" rx="3" fill="#b8bcc8"/>
+        <circle cx="100" cy="156" r="4" fill="#888ea0"/>
+        <line x1="120" y1="52" x2="135" y2="36" stroke="#c8ccd8" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="137" cy="34" r="4" fill="white" opacity="0.75"/>
+        <!-- Petites étoiles autour de l'astronaute -->
+        <circle cx="28" cy="58" r="1.5" fill="white" opacity="0.65"/>
+        <circle cx="170" cy="44" r="1.2" fill="white" opacity="0.5"/>
+        <circle cx="16" cy="130" r="1" fill="white" opacity="0.4"/>
+        <circle cx="182" cy="108" r="2" fill="white" opacity="0.55"/>
+        <circle cx="155" cy="22" r="1" fill="white" opacity="0.35"/>
+      </svg>
 
-      <!-- ============================================
-           DESCRIPTION HERO — À MODIFIER
-           Remplace ce Lorem Ipsum par une courte bio :
-           qui tu es, ton domaine, ce que tu cherches.
-      ============================================ -->
-      <p class="hero-desc">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris. Je recherche un poste / stage en
-        communication où je pourrai mettre en œuvre mes compétences créatives.
-      </p>
+      <div class="container hero-content">
+        <p class="hero-eyebrow">Communication · Design · Création</p>
 
-      <!-- CTA — redirige vers la première section de projets -->
-      <a href="#partie1" class="hero-cta">
-        <!-- Flèche vers le bas en SVG -->
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>
-        </svg>
-        Voir mes productions
-      </a>
-    </div>
+        <!-- NOM EN GRAND — modifie PRENOM et NOM -->
+        <h1 class="hero-name">
+          PRENOM<br>NOM
+        </h1>
 
-    <!-- Indicateur de scroll -->
-    <div class="scroll-hint">scroll</div>
-  </section>
-
-  <!-- ================================================
-       PARTIE 1 — AFFICHES & FLYERS · MAISON DES SOLIDARITÉS
-       id="partie1" → ancre du menu hamburger
-  ================================================ -->
-  <section class="project-section" id="partie1">
-    <div class="container">
-
-      <!-- En-tête de section -->
-      <div class="project-header">
-        <p class="section-tag">01</p>
-        <h2 class="section-title">Affiches &amp; Flyers</h2>
-        <!-- Sous-titre de contexte -->
-        <p style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase;">
-          Maison des Solidarités
+        <!-- ============================================
+             DESCRIPTION HERO — À MODIFIER
+             Remplace ce Lorem Ipsum par qui tu es
+             et ce que tu recherches (stage, emploi…).
+        ============================================ -->
+        <p class="hero-desc">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Ut enim ad minim veniam, quis nostrud exercitation ullamco.
+          Je recherche un poste en communication où mes compétences
+          créatives pourront pleinement s'exprimer.
         </p>
+
+        <a href="#partie1" class="hero-cta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>
+          </svg>
+          Voir mes productions
+        </a>
       </div>
 
-      <!-- Grid image + texte -->
-      <div class="project-grid">
+      <div class="scroll-hint">scroll</div>
+    </section>
 
-        <!-- IMAGE -->
-        <div class="project-image-wrap">
-          <!-- ============================================
-               IMAGE À METTRE ICI — PARTIE 1
-               Option A : balise img
-                 <img class="project-image" src="images/affiche-solidarites.jpg" alt="Affiche Maison des Solidarités" />
-               Option B : background CSS dans .project-image
-                 background-image: url('images/affiche-solidarites.jpg');
-          ============================================ -->
-          <div class="project-image"></div>
-          <div class="img-placeholder">
-            <!-- Icône image SVG placeholder -->
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-              <polyline points="21 15 16 10 5 21"/>
-            </svg>
-            IMAGE À AJOUTER
+    <!-- ================================================
+         PARTIE 1 — AFFICHES & FLYERS · MAISON DES SOLIDARITÉS
+         Planète déco : Neptune (bleue)
+    ================================================ -->
+    <section class="project-section" id="partie1">
+
+      <!-- PLANÈTE PARTIE 1 — Neptune style -->
+      <svg class="planet-deco" style="right:-70px; top:8%; width:260px; height:260px;" viewBox="0 0 260 260" aria-hidden="true">
+        <defs>
+          <radialGradient id="p1" cx="35%" cy="35%">
+            <stop offset="0%" stop-color="#3a4a8c"/>
+            <stop offset="60%" stop-color="#1a2055"/>
+            <stop offset="100%" stop-color="#08091e"/>
+          </radialGradient>
+        </defs>
+        <circle cx="130" cy="130" r="120" fill="url(#p1)"/>
+        <ellipse cx="130" cy="120" rx="118" ry="16" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+        <ellipse cx="130" cy="138" rx="116" ry="12" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      </svg>
+
+      <div class="container">
+        <div class="project-header">
+          <p class="section-tag">01 — Maison des Solidarités</p>
+          <h2 class="section-title">Affiches &amp; Flyers</h2>
+          <p class="section-sub">Communication visuelle · Print</p>
+          <div class="header-rule"></div>
+        </div>
+
+        <!-- Image principale + texte intro -->
+        <div class="intro-grid">
+          <div class="main-img-wrap">
+            <!-- ============================================
+                 IMAGE PRINCIPALE PARTIE 1 — À REMPLACER
+            ============================================ -->
+            <div class="img-bg"></div>
+            <div class="img-placeholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+              Image principale
+            </div>
+          </div>
+
+          <div class="intro-text">
+            <p class="project-meta">// Bénévolat · Communication visuelle</p>
+            <h3 class="project-title">Maison des Solidarités</h3>
+            <!-- ============================================
+                 DESCRIPTION INTRO PARTIE 1 — À MODIFIER
+            ============================================ -->
+            <p class="project-desc">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+              Duis aute irure dolor in reprehenderit in voluptate velit esse.
+            </p>
+            <div class="project-tags">
+              <span class="tag">Adobe Illustrator</span>
+              <span class="tag">Photoshop</span>
+              <span class="tag">Print Design</span>
+            </div>
           </div>
         </div>
 
-        <!-- TEXTE -->
-        <div class="project-text">
-          <p class="project-meta">// Bénévolat · Communication visuelle</p>
-          <h3 class="project-title">Maison des Solidarités</h3>
+        <!-- Grille des productions -->
+        <p class="productions-label">Productions</p>
+        <div class="prod-grid layout-a">
 
-          <!-- ============================================
-               DESCRIPTION PARTIE 1 — À MODIFIER
-               Décris ici les affiches et flyers que tu as
-               créés pour la Maison des Solidarités.
-          ============================================ -->
-          <p class="project-desc">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-            fugiat nulla pariatur.
-          </p>
+          <!-- VIGNETTE 1.1 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 1.1 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 01</p>
+              <!-- LÉGENDE 1.1 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
 
-          <!-- Tags outils / compétences — à adapter -->
-          <div class="project-tags">
-            <span class="tag">Adobe Illustrator</span>
-            <span class="tag">Photoshop</span>
-            <span class="tag">Print Design</span>
+          <!-- VIGNETTE 1.2 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 1.2 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 02</p>
+              <!-- LÉGENDE 1.2 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
+
+          <!-- VIGNETTE 1.3 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 1.3 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 03</p>
+              <!-- LÉGENDE 1.3 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
+
+          <!-- VIGNETTE 1.4 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 1.4 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 04</p>
+              <!-- LÉGENDE 1.4 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
+
+          <!-- VIGNETTE 1.5 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 1.5 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 05</p>
+              <!-- LÉGENDE 1.5 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================
+         PARTIE 2 — PROJETS DE COURS · ÉCOLE
+         Planète déco : Saturne avec anneaux
+    ================================================ -->
+    <section class="project-section" id="partie2" style="background: var(--bg-2);">
+
+      <!-- PLANÈTE PARTIE 2 — Saturne -->
+      <svg class="planet-deco" style="left:-55px; top:12%; width:300px; height:300px;" viewBox="0 0 300 300" aria-hidden="true">
+        <defs>
+          <radialGradient id="p2" cx="38%" cy="35%">
+            <stop offset="0%" stop-color="#5a4828"/>
+            <stop offset="55%" stop-color="#382e18"/>
+            <stop offset="100%" stop-color="#160f06"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="150" cy="168" rx="140" ry="28" fill="none" stroke="rgba(210,185,110,0.22)" stroke-width="16"/>
+        <circle cx="150" cy="150" r="76" fill="url(#p2)"/>
+        <ellipse cx="150" cy="139" rx="74" ry="9" fill="rgba(255,220,120,0.05)"/>
+        <ellipse cx="150" cy="160" rx="74" ry="7" fill="rgba(200,160,80,0.04)"/>
+        <ellipse cx="150" cy="168" rx="140" ry="28" fill="none" stroke="rgba(210,185,110,0.12)" stroke-width="7"/>
+      </svg>
+
+      <div class="container">
+        <div class="project-header">
+          <p class="section-tag">02 — École</p>
+          <h2 class="section-title">Projets de Cours</h2>
+          <p class="section-sub">Formation · Projets académiques</p>
+          <div class="header-rule"></div>
+        </div>
+
+        <!-- Image principale + texte (image à droite) -->
+        <div class="intro-grid">
+          <div class="intro-text">
+            <p class="project-meta">// Formation académique</p>
+            <h3 class="project-title">Projets Scolaires</h3>
+            <!-- ============================================
+                 DESCRIPTION INTRO PARTIE 2 — À MODIFIER
+            ============================================ -->
+            <p class="project-desc">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Pellentesque habitant morbi tristique senectus et netus et malesuada.
+              Praesent commodo cursus magna, vel scelerisque nisl consectetur.
+              Donec sed odio dui, cras mattis purus sit amet fermentum.
+            </p>
+            <div class="project-tags">
+              <span class="tag">Canva</span>
+              <span class="tag">InDesign</span>
+              <span class="tag">Branding</span>
+            </div>
+          </div>
+
+          <div class="main-img-wrap">
+            <!-- ============================================
+                 IMAGE PRINCIPALE PARTIE 2 — À REMPLACER
+            ============================================ -->
+            <div class="img-bg"></div>
+            <div class="img-placeholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+              Image principale
+            </div>
           </div>
         </div>
 
+        <p class="productions-label">Productions</p>
+        <div class="prod-grid layout-b">
+
+          <!-- VIGNETTE 2.1 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 2.1 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 01</p>
+              <!-- LÉGENDE 2.1 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
+
+          <!-- VIGNETTE 2.2 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 2.2 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 02</p>
+              <!-- LÉGENDE 2.2 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
+
+          <!-- VIGNETTE 2.3 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 2.3 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 03</p>
+              <!-- LÉGENDE 2.3 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
+
+          <!-- VIGNETTE 2.4 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 2.4 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 04</p>
+              <!-- LÉGENDE 2.4 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
+
+          <!-- VIGNETTE 2.5 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 2.5 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 05</p>
+              <!-- LÉGENDE 2.5 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
+
+          <!-- VIGNETTE 2.6 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 2.6 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 06</p>
+              <!-- LÉGENDE 2.6 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
+
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ================================================
-       PARTIE 2 — PROJETS DE COURS · ÉCOLE
-       id="partie2" → ancre du menu hamburger
-  ================================================ -->
-  <section class="project-section" id="partie2">
-    <div class="container">
+    <!-- ================================================
+         PARTIE 3 — STAGE · AIR FRANCE
+         Planète déco : Mars (rouge orangé)
+    ================================================ -->
+    <section class="project-section" id="partie3">
 
-      <div class="project-header">
-        <p class="section-tag">02</p>
-        <h2 class="section-title">Projets de Cours</h2>
-        <p style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase;">
-          École
-        </p>
-      </div>
+      <!-- PLANÈTE PARTIE 3 — Mars -->
+      <svg class="planet-deco" style="right:-45px; bottom:8%; width:240px; height:240px;" viewBox="0 0 240 240" aria-hidden="true">
+        <defs>
+          <radialGradient id="p3" cx="35%" cy="35%">
+            <stop offset="0%" stop-color="#8a3020"/>
+            <stop offset="55%" stop-color="#5a1a10"/>
+            <stop offset="100%" stop-color="#200808"/>
+          </radialGradient>
+        </defs>
+        <circle cx="120" cy="120" r="110" fill="url(#p3)"/>
+        <ellipse cx="92" cy="102" rx="28" ry="11" fill="rgba(200,100,60,0.1)" transform="rotate(-15 92 102)"/>
+        <ellipse cx="148" cy="142" rx="20" ry="8" fill="rgba(160,60,30,0.09)" transform="rotate(10 148 142)"/>
+      </svg>
 
-      <div class="project-grid">
+      <div class="container">
+        <div class="project-header">
+          <p class="section-tag">03 — Expérience Professionnelle</p>
+          <h2 class="section-title">Stage Air France</h2>
+          <p class="section-sub">Communication · Brand</p>
+          <div class="header-rule"></div>
+        </div>
 
-        <!-- IMAGE -->
-        <div class="project-image-wrap">
-          <!-- ============================================
-               IMAGE À METTRE ICI — PARTIE 2
-               Remplace par ton image de projet scolaire.
-          ============================================ -->
-          <div class="project-image"></div>
-          <div class="img-placeholder">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-              <polyline points="21 15 16 10 5 21"/>
-            </svg>
-            IMAGE À AJOUTER
+        <div class="intro-grid">
+          <div class="main-img-wrap">
+            <!-- ============================================
+                 IMAGE PRINCIPALE PARTIE 3 — À REMPLACER
+            ============================================ -->
+            <div class="img-bg"></div>
+            <div class="img-placeholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+              Image principale
+            </div>
+          </div>
+
+          <div class="intro-text">
+            <p class="project-meta">// Stage · Air France</p>
+            <h3 class="project-title">Air France</h3>
+            <!-- ============================================
+                 DESCRIPTION INTRO PARTIE 3 — À MODIFIER
+            ============================================ -->
+            <p class="project-desc">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Integer posuere erat ante venenatis dapibus posuere velit aliquet.
+              Nullam quis risus eget urna mollis ornare vel eu leo.
+              Cum sociis natoque penatibus et magnis dis parturient montes.
+            </p>
+            <div class="project-tags">
+              <span class="tag">Communication</span>
+              <span class="tag">Social Media</span>
+              <span class="tag">Charte graphique</span>
+            </div>
           </div>
         </div>
 
-        <!-- TEXTE -->
-        <div class="project-text">
-          <p class="project-meta">// Formation · Projets académiques</p>
-          <h3 class="project-title">Projets Scolaires</h3>
+        <p class="productions-label">Productions</p>
+        <div class="prod-grid layout-c">
 
-          <!-- ============================================
-               DESCRIPTION PARTIE 2 — À MODIFIER
-               Décris ici tes projets réalisés à l'école.
-          ============================================ -->
-          <p class="project-desc">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant
-            morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent
-            commodo cursus magna, vel scelerisque nisl consectetur. Donec sed odio dui.
-            Cras mattis consectetur purus sit amet fermentum.
-          </p>
+          <!-- VIGNETTE 3.1 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 3.1 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 01</p>
+              <!-- LÉGENDE 3.1 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
 
-          <div class="project-tags">
-            <span class="tag">Canva</span>
-            <span class="tag">InDesign</span>
-            <span class="tag">Branding</span>
+          <!-- VIGNETTE 3.2 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 3.2 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 02</p>
+              <!-- LÉGENDE 3.2 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
+
+          <!-- VIGNETTE 3.3 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 3.3 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 03</p>
+              <!-- LÉGENDE 3.3 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
+
+          <!-- VIGNETTE 3.4 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 3.4 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 04</p>
+              <!-- LÉGENDE 3.4 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
+
+          <!-- VIGNETTE 3.5 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 3.5 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 05</p>
+              <!-- LÉGENDE 3.5 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
+
+          <!-- VIGNETTE 3.6 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 3.6 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 06</p>
+              <!-- LÉGENDE 3.6 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================
+         PARTIE 4 — PROJETS PERSONNELS
+         Planète déco : Jupiter (grande, gazeuse)
+    ================================================ -->
+    <section class="project-section" id="partie4" style="background: var(--bg-2);">
+
+      <!-- PLANÈTE PARTIE 4 — Jupiter -->
+      <svg class="planet-deco" style="left:-80px; top:18%; width:360px; height:360px;" viewBox="0 0 360 360" aria-hidden="true">
+        <defs>
+          <radialGradient id="p4" cx="35%" cy="35%">
+            <stop offset="0%" stop-color="#584630"/>
+            <stop offset="50%" stop-color="#362818"/>
+            <stop offset="100%" stop-color="#120c06"/>
+          </radialGradient>
+        </defs>
+        <circle cx="180" cy="180" r="165" fill="url(#p4)"/>
+        <ellipse cx="180" cy="148" rx="163" ry="15" fill="rgba(200,160,100,0.07)"/>
+        <ellipse cx="180" cy="174" rx="163" ry="11" fill="rgba(180,120,70,0.06)"/>
+        <ellipse cx="180" cy="198" rx="163" ry="16" fill="rgba(220,180,120,0.05)"/>
+        <ellipse cx="180" cy="222" rx="163" ry="11" fill="rgba(160,100,60,0.05)"/>
+        <!-- Grande Tache Rouge -->
+        <ellipse cx="218" cy="190" rx="26" ry="15" fill="rgba(180,60,40,0.16)" transform="rotate(-10 218 190)"/>
+      </svg>
+
+      <div class="container">
+        <div class="project-header">
+          <p class="section-tag">04 — Créations Personnelles</p>
+          <h2 class="section-title">Projets Personnels</h2>
+          <p class="section-sub">Explorations &amp; Direction artistique</p>
+          <div class="header-rule"></div>
+        </div>
+
+        <div class="intro-grid">
+          <div class="intro-text">
+            <p class="project-meta">// Projets perso · Explorations</p>
+            <h3 class="project-title">Projets Personnels</h3>
+            <!-- ============================================
+                 DESCRIPTION INTRO PARTIE 4 — À MODIFIER
+            ============================================ -->
+            <p class="project-desc">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Aenean lacinia bibendum nulla sed consectetur.
+              Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum.
+              Fermentum massa justo sit amet risus posuere lorem.
+            </p>
+            <div class="project-tags">
+              <span class="tag">Motion Design</span>
+              <span class="tag">Direction artistique</span>
+              <span class="tag">Typographie</span>
+            </div>
+          </div>
+
+          <div class="main-img-wrap">
+            <!-- ============================================
+                 IMAGE PRINCIPALE PARTIE 4 — À REMPLACER
+            ============================================ -->
+            <div class="img-bg"></div>
+            <div class="img-placeholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+              Image principale
+            </div>
           </div>
         </div>
 
-      </div>
-    </div>
-  </section>
+        <p class="productions-label">Productions</p>
+        <div class="prod-grid layout-d">
 
-  <!-- ================================================
-       PARTIE 3 — STAGE · AIR FRANCE
-       id="partie3" → ancre du menu hamburger
-  ================================================ -->
-  <section class="project-section" id="partie3">
-    <div class="container">
-
-      <div class="project-header">
-        <p class="section-tag">03</p>
-        <h2 class="section-title">Stage Air France</h2>
-        <p style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase;">
-          Expérience professionnelle
-        </p>
-      </div>
-
-      <div class="project-grid">
-
-        <!-- IMAGE -->
-        <div class="project-image-wrap">
-          <!-- ============================================
-               IMAGE À METTRE ICI — PARTIE 3
-               Remplace par une image de ton travail chez Air France.
-          ============================================ -->
-          <div class="project-image"></div>
-          <div class="img-placeholder">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-              <polyline points="21 15 16 10 5 21"/>
-            </svg>
-            IMAGE À AJOUTER
+          <!-- VIGNETTE 4.1 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 4.1 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 01</p>
+              <!-- LÉGENDE 4.1 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
           </div>
-        </div>
 
-        <!-- TEXTE -->
-        <div class="project-text">
-          <p class="project-meta">// Stage · Air France</p>
-          <h3 class="project-title">Air France</h3>
-
-          <!-- ============================================
-               DESCRIPTION PARTIE 3 — À MODIFIER
-               Décris ici les missions et projets réalisés
-               durant ton stage chez Air France.
-          ============================================ -->
-          <p class="project-desc">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a
-            ante venenatis dapibus posuere velit aliquet. Nullam quis risus eget urna mollis
-            ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes,
-            nascetur ridiculus mus. Donec ullamcorper nulla non metus auctor fringilla.
-          </p>
-
-          <div class="project-tags">
-            <span class="tag">Communication</span>
-            <span class="tag">Social Media</span>
-            <span class="tag">Charte graphique</span>
+          <!-- VIGNETTE 4.2 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 4.2 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 02</p>
+              <!-- LÉGENDE 4.2 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
           </div>
-        </div>
 
-      </div>
-    </div>
-  </section>
-
-  <!-- ================================================
-       PARTIE 4 — PROJETS PERSONNELS
-       id="partie4" → ancre du menu hamburger
-  ================================================ -->
-  <section class="project-section" id="partie4">
-    <div class="container">
-
-      <div class="project-header">
-        <p class="section-tag">04</p>
-        <h2 class="section-title">Projets Personnels</h2>
-        <p style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase;">
-          Créations &amp; Explorations
-        </p>
-      </div>
-
-      <div class="project-grid">
-
-        <!-- IMAGE -->
-        <div class="project-image-wrap">
-          <!-- ============================================
-               IMAGE À METTRE ICI — PARTIE 4
-               Remplace par une image de tes projets perso.
-          ============================================ -->
-          <div class="project-image"></div>
-          <div class="img-placeholder">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-              <polyline points="21 15 16 10 5 21"/>
-            </svg>
-            IMAGE À AJOUTER
+          <!-- VIGNETTE 4.3 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 4.3 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 03</p>
+              <!-- LÉGENDE 4.3 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
           </div>
-        </div>
 
-        <!-- TEXTE -->
-        <div class="project-text">
-          <p class="project-meta">// Perso · Explorations créatives</p>
-          <h3 class="project-title">Projets Personnels</h3>
-
-          <!-- ============================================
-               DESCRIPTION PARTIE 4 — À MODIFIER
-               Décris ici tes projets personnels,
-               tes passions et expérimentations créatives.
-          ============================================ -->
-          <p class="project-desc">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean lacinia bibendum
-            nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce
-            dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum
-            massa justo sit amet risus. Sed posuere consectetur est at lobortis.
-          </p>
-
-          <div class="project-tags">
-            <span class="tag">Motion Design</span>
-            <span class="tag">Direction artistique</span>
-            <span class="tag">Typographie</span>
+          <!-- VIGNETTE 4.4 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 4.4 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 04</p>
+              <!-- LÉGENDE 4.4 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
           </div>
-        </div>
 
+          <!-- VIGNETTE 4.5 -->
+          <div class="prod-card">
+            <div class="prod-img">
+              <!-- IMAGE VIGNETTE 4.5 — À REMPLACER -->
+              <div class="prod-img-bg"></div>
+              <div class="prod-img-placeholder">Image à ajouter</div>
+            </div>
+            <div class="prod-caption">
+              <p class="prod-caption-title">Production 05</p>
+              <!-- LÉGENDE 4.5 — À MODIFIER -->
+              <p class="prod-caption-desc">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+            </div>
+          </div>
+
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+  </main>
 
   <!-- ================================================
        FOOTER
@@ -888,33 +1360,109 @@
   <footer>
     <div class="container">
       <!-- NOM dans le footer — à modifier -->
-      <p class="footer-name">PRENOM <span>NOM</span></p>
+      <p class="footer-name">PRENOM NOM</p>
       <p class="footer-copy">© 2025 — Portfolio Communication &amp; Design</p>
     </div>
   </footer>
 
   <!-- ================================================
-       JAVASCRIPT — MENU HAMBURGER
-       Gestion ouverture / fermeture du panel nav
+       JAVASCRIPT
+       1. Canvas étoiles avec scintillement + parallaxe
+       2. Menu hamburger
   ================================================ -->
   <script>
+    /* ------------------------------------------------
+       1. CANVAS ÉTOILES
+       Ciel étoilé animé avec parallaxe douce au scroll
+    ------------------------------------------------ */
+    (function () {
+      const canvas = document.getElementById('starfield');
+      const ctx    = canvas.getContext('2d');
+
+      function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      // Génère les étoiles aléatoirement
+      const STAR_COUNT = 280;
+      const stars = Array.from({ length: STAR_COUNT }, () => ({
+        x:     Math.random(),
+        y:     Math.random(),
+        r:     Math.random() * 1.4 + 0.3,
+        alpha: Math.random() * 0.65 + 0.15,
+        speed: Math.random() * 0.35 + 0.08,
+        phase: Math.random() * Math.PI * 2,
+      }));
+
+      // Quelques étoiles plus brillantes avec halo
+      const brightStars = Array.from({ length: 7 }, () => ({
+        x:     Math.random(),
+        y:     Math.random(),
+        r:     Math.random() * 2.2 + 1.4,
+        alpha: Math.random() * 0.35 + 0.1,
+      }));
+
+      let scrollY = 0;
+      window.addEventListener('scroll', () => { scrollY = window.scrollY; }, { passive: true });
+
+      let t = 0;
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Étoiles normales avec scintillement et parallaxe
+        stars.forEach(s => {
+          const a  = s.alpha * (0.55 + 0.45 * Math.sin(t * s.speed + s.phase));
+          const yy = ((s.y * canvas.height - scrollY * s.speed * 0.15) % canvas.height + canvas.height) % canvas.height;
+          ctx.beginPath();
+          ctx.arc(s.x * canvas.width, yy, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,${a})`;
+          ctx.fill();
+        });
+
+        // Étoiles brillantes avec halo doux
+        brightStars.forEach(s => {
+          const x  = s.x * canvas.width;
+          const y  = ((s.y * canvas.height - scrollY * 0.04) % canvas.height + canvas.height) % canvas.height;
+          const gr = ctx.createRadialGradient(x, y, 0, x, y, s.r * 6);
+          gr.addColorStop(0, `rgba(255,255,255,${s.alpha * 0.9})`);
+          gr.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.beginPath();
+          ctx.arc(x, y, s.r * 6, 0, Math.PI * 2);
+          ctx.fillStyle = gr;
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(x, y, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,${s.alpha * 2.2})`;
+          ctx.fill();
+        });
+
+        t += 0.01;
+        requestAnimationFrame(draw);
+      }
+
+      draw();
+    })();
+
+    /* ------------------------------------------------
+       2. MENU HAMBURGER
+    ------------------------------------------------ */
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const navMenu      = document.getElementById('navMenu');
     const navOverlay   = document.getElementById('navOverlay');
 
-    // Ouvre / ferme le menu au clic sur le hamburger
     hamburgerBtn.addEventListener('click', () => {
       const isOpen = navMenu.classList.toggle('open');
       navOverlay.classList.toggle('open', isOpen);
       hamburgerBtn.classList.toggle('open', isOpen);
-      // Empêche le scroll de la page quand le menu est ouvert
       document.body.style.overflow = isOpen ? 'hidden' : '';
     });
 
-    // Ferme le menu en cliquant sur l'overlay
     navOverlay.addEventListener('click', closeMenu);
 
-    // Fonction globale appelée par les liens du menu
     function closeMenu() {
       navMenu.classList.remove('open');
       navOverlay.classList.remove('open');
@@ -922,8 +1470,7 @@
       document.body.style.overflow = '';
     }
 
-    // Ferme le menu si on appuie sur Échap
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', e => {
       if (e.key === 'Escape') closeMenu();
     });
   </script>
