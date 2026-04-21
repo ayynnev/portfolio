@@ -1,1 +1,932 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PRENOM NOM — Portfolio</title>
 
+  <!-- ================================================
+       POLICES GOOGLE FONTS
+       Rajdhani : titres cyberpunk anguleux
+       Share Tech Mono : style terminal / code
+  ================================================ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ================================================
+       VARIABLES CSS — PALETTE CYBERPUNK
+       Modifie ces valeurs pour changer le thème global
+    ================================================ */
+    :root {
+      --bg:           #050508;        /* fond principal quasi-noir */
+      --bg-2:         #0a0a10;        /* fond sections alternées */
+      --surface:      #0f0f18;        /* cartes / panels */
+      --border:       #1a1a2e;        /* bordures subtiles */
+      --cyan:         #00f0ff;        /* accent principal néon cyan */
+      --yellow:       #f5c518;        /* accent secondaire jaune NC */
+      --pink:         #ff2d78;        /* accent tertiaire rose vif */
+      --text:         #c8d0e0;        /* texte courant */
+      --text-muted:   #4a5568;        /* texte secondaire */
+      --white:        #ffffff;
+      --font-display: 'Rajdhani', sans-serif;
+      --font-mono:    'Share Tech Mono', monospace;
+      --max-w:        1100px;
+      --radius:       4px;
+      --transition:   0.3s ease;
+    }
+
+    /* ================================================
+       RESET & BASE
+    ================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbar custom */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 2px; }
+
+    /* ================================================
+       UTILITAIRES
+    ================================================ */
+    .container {
+      width: 100%;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    /* Ligne décorative néon */
+    .neon-line {
+      display: inline-block;
+      width: 48px;
+      height: 2px;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+      vertical-align: middle;
+      margin-right: 0.75rem;
+    }
+
+    /* Label de section (petit tag au-dessus du titre) */
+    .section-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .section-tag::before {
+      content: '//';
+      opacity: 0.5;
+    }
+
+    /* Titre de section */
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 700;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+
+    /* Séparateur diagonal entre sections */
+    .divider {
+      width: 100%;
+      height: 60px;
+      background: var(--bg-2);
+      clip-path: polygon(0 0, 100% 30%, 100% 100%, 0 100%);
+      margin-top: -1px;
+    }
+
+    /* ================================================
+       HEADER / NAVIGATION
+       Discret, barre fine en haut avec menu hamburger
+    ================================================ */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1rem 0;
+      background: rgba(5, 5, 8, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Logo / initiales dans le header */
+    .header-logo {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      text-decoration: none;
+    }
+    .header-logo span { color: var(--cyan); }
+
+    /* ---- BOUTON HAMBURGER ---- */
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 6px;
+      background: none;
+      border: none;
+      z-index: 1100;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--cyan);
+      border-radius: 2px;
+      transition: var(--transition);
+      box-shadow: 0 0 6px var(--cyan);
+    }
+
+    /* Animation hamburger → croix quand ouvert */
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ---- MENU DÉROULANT ---- */
+    .nav-menu {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: min(280px, 85vw);
+      height: 100vh;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      padding: 5rem 2rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      transition: right 0.4s cubic-bezier(0.77, 0, 0.18, 1);
+      z-index: 1050;
+    }
+    .nav-menu.open { right: 0; }
+
+    .nav-menu a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text);
+      text-decoration: none;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    .nav-menu a:hover { color: var(--cyan); padding-left: 0.5rem; }
+    .nav-menu a .nav-num {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--cyan);
+      opacity: 0.7;
+    }
+
+    /* Overlay sombre derrière le menu */
+    .nav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1040;
+    }
+    .nav-overlay.open { display: block; }
+
+    /* ================================================
+       SECTION HERO
+       Plein écran, nom en grand, description courte
+    ================================================ */
+    #hero {
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      padding: 6rem 0 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Grille de fond style cyberpunk */
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,240,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,240,255,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    /* Lueur d'ambiance en fond */
+    #hero::after {
+      content: '';
+      position: absolute;
+      top: 30%;
+      left: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(ellipse, rgba(0,240,255,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content { position: relative; z-index: 1; }
+
+    /* Petite ligne de statut avant le nom */
+    .hero-status {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--cyan);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .hero-status::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan);
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    /* NOM EN GRAND */
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 14vw, 8rem);
+      font-weight: 700;
+      line-height: 0.95;
+      text-transform: uppercase;
+      color: var(--white);
+      letter-spacing: -0.01em;
+      margin-bottom: 1.5rem;
+    }
+    .hero-name .accent { color: var(--cyan); text-shadow: 0 0 30px rgba(0,240,255,0.5); }
+
+    /* Description courte sous le nom */
+    .hero-desc {
+      font-family: var(--font-mono);
+      font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+      color: var(--text);
+      max-width: 480px;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      border-left: 2px solid var(--cyan);
+      padding-left: 1rem;
+    }
+
+    /* ---- CTA principal ---- */
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--bg);
+      background: var(--cyan);
+      border: none;
+      padding: 0.85rem 2rem;
+      text-decoration: none;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 0 20px rgba(0,240,255,0.35);
+    }
+    .hero-cta:hover {
+      background: var(--white);
+      box-shadow: 0 0 40px rgba(0,240,255,0.6);
+      transform: translateY(-2px);
+    }
+    .hero-cta svg { width: 18px; height: 18px; }
+
+    /* Scroll indicator discret */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    .scroll-hint::after {
+      content: '';
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(var(--cyan), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0%   { transform: scaleY(0); transform-origin: top; }
+      50%  { transform: scaleY(1); transform-origin: top; }
+      51%  { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* ================================================
+       SECTIONS PROJETS
+       Template commun aux 4 sections
+    ================================================ */
+    .project-section {
+      padding: 5rem 0;
+      background: var(--bg);
+      position: relative;
+    }
+    .project-section:nth-child(even) { background: var(--bg-2); }
+
+    /* En-tête de section */
+    .project-header {
+      margin-bottom: 3rem;
+    }
+
+    /* Layout image + texte (mobile: empilé, desktop: côte à côte) */
+    .project-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    @media (min-width: 768px) {
+      .project-grid { grid-template-columns: 1fr 1fr; align-items: start; }
+      /* Alterne gauche/droite pour les sections paires */
+      .project-section:nth-child(even) .project-grid { direction: rtl; }
+      .project-section:nth-child(even) .project-grid > * { direction: ltr; }
+    }
+
+    /* ---- Placeholder image ---- */
+    .project-image-wrap {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      /* clip angulaire style cyberpunk */
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+      background: var(--surface);
+      aspect-ratio: 4/3;
+      cursor: pointer;
+    }
+
+    /* ============================================
+       IMAGE À METTRE ICI
+       Remplace le background de .project-image par
+       une balise <img src="..." /> ou un background-image
+    ============================================ */
+    .project-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: linear-gradient(135deg, #0a0a18 0%, #111128 100%);
+      transition: transform 0.5s ease;
+      /* Quand tu auras une image, retire ce background et ajoute : */
+      /* background: none; */
+    }
+
+    /* Placeholder visuel en attendant l'image */
+    .img-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+    }
+    .img-placeholder svg {
+      width: 40px;
+      height: 40px;
+      opacity: 0.3;
+    }
+
+    /* Effet survol image : zoom léger + lueur */
+    .project-image-wrap:hover .project-image {
+      transform: scale(1.04);
+    }
+    .project-image-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 2px solid var(--cyan);
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      box-shadow: inset 0 0 30px rgba(0,240,255,0.15);
+    }
+    .project-image-wrap:hover::after { opacity: 1; }
+
+    /* ---- Texte du projet ---- */
+    .project-text { display: flex; flex-direction: column; justify-content: center; gap: 1.25rem; }
+
+    .project-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 700;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .project-meta {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--cyan);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    /* ============================================
+       TEXTE DE DESCRIPTION À MODIFIER
+       Remplace le Lorem Ipsum par ta vraie description
+    ============================================ */
+    .project-desc {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text);
+      line-height: 1.9;
+    }
+
+    /* Tags / technologies utilisées */
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      border: 1px solid rgba(0,240,255,0.3);
+      padding: 0.25rem 0.65rem;
+      /* Clip asymétrique */
+      clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+      background: rgba(0,240,255,0.05);
+    }
+
+    /* ================================================
+       FOOTER
+    ================================================ */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 0;
+      text-align: center;
+    }
+    .footer-name {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 0.5rem;
+    }
+    .footer-name span { color: var(--cyan); }
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* ================================================
+       RESPONSIVE — AJUSTEMENTS MOBILE
+    ================================================ */
+    @media (max-width: 480px) {
+      .hero-name { letter-spacing: -0.02em; }
+      .project-section { padding: 3.5rem 0; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ================================================
+       HEADER FIXE
+       Menu hamburger → ouverture du panel latéral
+  ================================================ -->
+  <header>
+    <div class="container header-inner">
+
+      <!-- LOGO / INITIALES — modifie les lettres ici -->
+      <a href="#hero" class="header-logo">P<span>.</span>N</a>
+
+      <!-- Bouton hamburger -->
+      <button class="hamburger" id="hamburgerBtn" aria-label="Ouvrir le menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Overlay sombre cliquable pour fermer le menu -->
+  <div class="nav-overlay" id="navOverlay"></div>
+
+  <!-- Panel de navigation latéral -->
+  <nav class="nav-menu" id="navMenu" aria-label="Navigation principale">
+    <!-- Chaque lien pointe vers l'id de la section correspondante -->
+    <!-- Modifie les noms si tu veux renommer les parties -->
+    <a href="#partie1" onclick="closeMenu()"><span class="nav-num">01</span> PARTIE 1</a>
+    <a href="#partie2" onclick="closeMenu()"><span class="nav-num">02</span> PARTIE 2</a>
+    <a href="#partie3" onclick="closeMenu()"><span class="nav-num">03</span> PARTIE 3</a>
+    <a href="#partie4" onclick="closeMenu()"><span class="nav-num">04</span> PARTIE 4</a>
+  </nav>
+
+  <!-- ================================================
+       SECTION HERO
+       Première chose visible à l'arrivée sur la page
+  ================================================ -->
+  <section id="hero">
+    <div class="container hero-content">
+
+      <!-- Statut en haut -->
+      <p class="hero-status">Disponible · Communication &amp; Design</p>
+
+      <!-- NOM EN GRAND — remplace NOM et PRENOM -->
+      <h1 class="hero-name">
+        PRENOM<br><span class="accent">NOM</span>
+      </h1>
+
+      <!-- ============================================
+           DESCRIPTION HERO — À MODIFIER
+           Remplace ce Lorem Ipsum par une courte bio :
+           qui tu es, ton domaine, ce que tu cherches.
+      ============================================ -->
+      <p class="hero-desc">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris. Je recherche un poste / stage en
+        communication où je pourrai mettre en œuvre mes compétences créatives.
+      </p>
+
+      <!-- CTA — redirige vers la première section de projets -->
+      <a href="#partie1" class="hero-cta">
+        <!-- Flèche vers le bas en SVG -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>
+        </svg>
+        Voir mes productions
+      </a>
+    </div>
+
+    <!-- Indicateur de scroll -->
+    <div class="scroll-hint">scroll</div>
+  </section>
+
+  <!-- ================================================
+       PARTIE 1 — AFFICHES & FLYERS · MAISON DES SOLIDARITÉS
+       id="partie1" → ancre du menu hamburger
+  ================================================ -->
+  <section class="project-section" id="partie1">
+    <div class="container">
+
+      <!-- En-tête de section -->
+      <div class="project-header">
+        <p class="section-tag">01</p>
+        <h2 class="section-title">Affiches &amp; Flyers</h2>
+        <!-- Sous-titre de contexte -->
+        <p style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase;">
+          Maison des Solidarités
+        </p>
+      </div>
+
+      <!-- Grid image + texte -->
+      <div class="project-grid">
+
+        <!-- IMAGE -->
+        <div class="project-image-wrap">
+          <!-- ============================================
+               IMAGE À METTRE ICI — PARTIE 1
+               Option A : balise img
+                 <img class="project-image" src="images/affiche-solidarites.jpg" alt="Affiche Maison des Solidarités" />
+               Option B : background CSS dans .project-image
+                 background-image: url('images/affiche-solidarites.jpg');
+          ============================================ -->
+          <div class="project-image"></div>
+          <div class="img-placeholder">
+            <!-- Icône image SVG placeholder -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            IMAGE À AJOUTER
+          </div>
+        </div>
+
+        <!-- TEXTE -->
+        <div class="project-text">
+          <p class="project-meta">// Bénévolat · Communication visuelle</p>
+          <h3 class="project-title">Maison des Solidarités</h3>
+
+          <!-- ============================================
+               DESCRIPTION PARTIE 1 — À MODIFIER
+               Décris ici les affiches et flyers que tu as
+               créés pour la Maison des Solidarités.
+          ============================================ -->
+          <p class="project-desc">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+            fugiat nulla pariatur.
+          </p>
+
+          <!-- Tags outils / compétences — à adapter -->
+          <div class="project-tags">
+            <span class="tag">Adobe Illustrator</span>
+            <span class="tag">Photoshop</span>
+            <span class="tag">Print Design</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================
+       PARTIE 2 — PROJETS DE COURS · ÉCOLE
+       id="partie2" → ancre du menu hamburger
+  ================================================ -->
+  <section class="project-section" id="partie2">
+    <div class="container">
+
+      <div class="project-header">
+        <p class="section-tag">02</p>
+        <h2 class="section-title">Projets de Cours</h2>
+        <p style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase;">
+          École
+        </p>
+      </div>
+
+      <div class="project-grid">
+
+        <!-- IMAGE -->
+        <div class="project-image-wrap">
+          <!-- ============================================
+               IMAGE À METTRE ICI — PARTIE 2
+               Remplace par ton image de projet scolaire.
+          ============================================ -->
+          <div class="project-image"></div>
+          <div class="img-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            IMAGE À AJOUTER
+          </div>
+        </div>
+
+        <!-- TEXTE -->
+        <div class="project-text">
+          <p class="project-meta">// Formation · Projets académiques</p>
+          <h3 class="project-title">Projets Scolaires</h3>
+
+          <!-- ============================================
+               DESCRIPTION PARTIE 2 — À MODIFIER
+               Décris ici tes projets réalisés à l'école.
+          ============================================ -->
+          <p class="project-desc">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant
+            morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent
+            commodo cursus magna, vel scelerisque nisl consectetur. Donec sed odio dui.
+            Cras mattis consectetur purus sit amet fermentum.
+          </p>
+
+          <div class="project-tags">
+            <span class="tag">Canva</span>
+            <span class="tag">InDesign</span>
+            <span class="tag">Branding</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================
+       PARTIE 3 — STAGE · AIR FRANCE
+       id="partie3" → ancre du menu hamburger
+  ================================================ -->
+  <section class="project-section" id="partie3">
+    <div class="container">
+
+      <div class="project-header">
+        <p class="section-tag">03</p>
+        <h2 class="section-title">Stage Air France</h2>
+        <p style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase;">
+          Expérience professionnelle
+        </p>
+      </div>
+
+      <div class="project-grid">
+
+        <!-- IMAGE -->
+        <div class="project-image-wrap">
+          <!-- ============================================
+               IMAGE À METTRE ICI — PARTIE 3
+               Remplace par une image de ton travail chez Air France.
+          ============================================ -->
+          <div class="project-image"></div>
+          <div class="img-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            IMAGE À AJOUTER
+          </div>
+        </div>
+
+        <!-- TEXTE -->
+        <div class="project-text">
+          <p class="project-meta">// Stage · Air France</p>
+          <h3 class="project-title">Air France</h3>
+
+          <!-- ============================================
+               DESCRIPTION PARTIE 3 — À MODIFIER
+               Décris ici les missions et projets réalisés
+               durant ton stage chez Air France.
+          ============================================ -->
+          <p class="project-desc">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a
+            ante venenatis dapibus posuere velit aliquet. Nullam quis risus eget urna mollis
+            ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes,
+            nascetur ridiculus mus. Donec ullamcorper nulla non metus auctor fringilla.
+          </p>
+
+          <div class="project-tags">
+            <span class="tag">Communication</span>
+            <span class="tag">Social Media</span>
+            <span class="tag">Charte graphique</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================
+       PARTIE 4 — PROJETS PERSONNELS
+       id="partie4" → ancre du menu hamburger
+  ================================================ -->
+  <section class="project-section" id="partie4">
+    <div class="container">
+
+      <div class="project-header">
+        <p class="section-tag">04</p>
+        <h2 class="section-title">Projets Personnels</h2>
+        <p style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase;">
+          Créations &amp; Explorations
+        </p>
+      </div>
+
+      <div class="project-grid">
+
+        <!-- IMAGE -->
+        <div class="project-image-wrap">
+          <!-- ============================================
+               IMAGE À METTRE ICI — PARTIE 4
+               Remplace par une image de tes projets perso.
+          ============================================ -->
+          <div class="project-image"></div>
+          <div class="img-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            IMAGE À AJOUTER
+          </div>
+        </div>
+
+        <!-- TEXTE -->
+        <div class="project-text">
+          <p class="project-meta">// Perso · Explorations créatives</p>
+          <h3 class="project-title">Projets Personnels</h3>
+
+          <!-- ============================================
+               DESCRIPTION PARTIE 4 — À MODIFIER
+               Décris ici tes projets personnels,
+               tes passions et expérimentations créatives.
+          ============================================ -->
+          <p class="project-desc">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean lacinia bibendum
+            nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce
+            dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum
+            massa justo sit amet risus. Sed posuere consectetur est at lobortis.
+          </p>
+
+          <div class="project-tags">
+            <span class="tag">Motion Design</span>
+            <span class="tag">Direction artistique</span>
+            <span class="tag">Typographie</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================
+       FOOTER
+  ================================================ -->
+  <footer>
+    <div class="container">
+      <!-- NOM dans le footer — à modifier -->
+      <p class="footer-name">PRENOM <span>NOM</span></p>
+      <p class="footer-copy">© 2025 — Portfolio Communication &amp; Design</p>
+    </div>
+  </footer>
+
+  <!-- ================================================
+       JAVASCRIPT — MENU HAMBURGER
+       Gestion ouverture / fermeture du panel nav
+  ================================================ -->
+  <script>
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navMenu      = document.getElementById('navMenu');
+    const navOverlay   = document.getElementById('navOverlay');
+
+    // Ouvre / ferme le menu au clic sur le hamburger
+    hamburgerBtn.addEventListener('click', () => {
+      const isOpen = navMenu.classList.toggle('open');
+      navOverlay.classList.toggle('open', isOpen);
+      hamburgerBtn.classList.toggle('open', isOpen);
+      // Empêche le scroll de la page quand le menu est ouvert
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    // Ferme le menu en cliquant sur l'overlay
+    navOverlay.addEventListener('click', closeMenu);
+
+    // Fonction globale appelée par les liens du menu
+    function closeMenu() {
+      navMenu.classList.remove('open');
+      navOverlay.classList.remove('open');
+      hamburgerBtn.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // Ferme le menu si on appuie sur Échap
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMenu();
+    });
+  </script>
+
+</body>
+</html>
